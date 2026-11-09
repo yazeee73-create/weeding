@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Ahammed & Suhanaa | Wedding Invitation</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Cormorant Garamond, Great Vibes, Montserrat -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            sage: {
+              50: '#f4f6f4',
+              100: '#e5eae5',
+              200: '#cbd7cb',
+              300: '#a7bda7',
+              700: '#435a43',
+              800: '#344534',
+            },
+            champagne: {
+              100: '#faf6ee',
+              200: '#f3ebd6',
+              500: '#c59d5f',
+              600: '#b08443',
+            },
+            dustyrose: '#d99b9b',
+            royalnavy: '#1b2a47'
+          },
+          fontFamily: {
+            cormorant: ['"Cormorant Garamond"', 'serif'],
+            script: ['"Alex Brush"', 'cursive'],
+            montserrat: ['"Montserrat"', 'sans-serif'],
+            playfair: ['"Playfair Display"', 'serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: #0f1411;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    /* Envelope 3D Animation & Styles */
+    .perspective-1000 {
+      perspective: 1000px;
+    }
+
+    .envelope-flap {
+      transform-origin: top center;
+      transition: transform 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .envelope-flap.open {
+      transform: rotateX(180deg);
+      z-index: 0;
+    }
+
+    .wax-seal {
+      box-shadow: 0 4px 15px rgba(181, 101, 101, 0.5), inset 0 2px 4px rgba(255, 255, 255, 0.6), inset 0 -2px 4px rgba(0, 0, 0, 0.2);
+      transition: transform 0.3s ease, filter 0.3s ease;
+      cursor: pointer;
+    }
+    .wax-seal:hover {
+      transform: scale(1.06);
+      filter: brightness(1.05);
+    }
+
+    /* Scratch Canvas overlay */
+    #scratchCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 1rem;
+      cursor: crosshair;
+      touch-action: none;
+    }
+
+    /* Floating floral shimmer */
+    @keyframes floatPetal {
+      0% { transform: translateY(-10%) rotate(0deg); opacity: 0; }
+      15% { opacity: 0.8; }
+      90% { opacity: 0.8; }
+      100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+    }
+    .petal {
+      position: fixed;
+      pointer-events: none;
+      z-index: 40;
+      animation: floatPetal linear infinite;
+    }
+
+    /* Subtle pulsing for interactive items */
+    @keyframes softPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.03); }
+    }
+    .pulse-subtle {
+      animation: softPulse 2.4s infinite ease-in-out;
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 4px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #c59d5f;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body class="flex justify-center min-h-screen text-slate-800 antialiased overflow-x-hidden selection:bg-champagne-200">
+
+  <!-- Floating Falling Petals Container -->
+  <div id="petals-container" class="pointer-events-none fixed inset-0 overflow-hidden z-30"></div>
+
+  <!-- Music Toggle Floating Pill -->
+  <button id="musicToggleBtn" class="fixed top-4 right-4 z-50 bg-white/90 backdrop-blur-md shadow-lg border border-amber-200/60 rounded-full px-3 py-2 flex items-center gap-2 text-xs font-medium text-amber-900 transition-all active:scale-95">
+    <span id="musicIcon" class="text-amber-600 animate-spin" style="animation-duration: 4s;"><i class="fa-solid fa-compact-disc text-sm"></i></span>
+    <span id="musicText">Music On</span>
+  </button>
+
+  <!-- Mobile Screen Wrapper Frame (Matches exact smartphone aspect from video) -->
+  <main class="w-full max-w-md min-h-screen bg-[#faf8f5] shadow-2xl relative flex flex-col overflow-hidden">
+
+    <!-- ==================== 1. DIGITAL ENVELOPE MODAL (INITIAL SCREEN) ==================== -->
+    <div id="envelopeScreen" class="fixed inset-0 max-w-md mx-auto z-40 bg-[#dbe4db] flex flex-col items-center justify-center p-4 transition-all duration-1000">
+      
+      <!-- Ambient Floral Background Elements -->
+      <div class="absolute inset-0 opacity-25 pointer-events-none bg-[radial-gradient(#8ca28c_1px,transparent_1px)] [background-size:18px_18px]"></div>
+      
+      <div class="text-center mb-6 z-10">
+        <p class="font-cormorant tracking-widest uppercase text-xs text-sage-800 font-semibold mb-1">An Auspicious Invitation</p>
+        <h1 class="font-script text-4xl text-emerald-900">Ahammed & Suhanaa</h1>
+      </div>
+
+      <!-- Envelope Outer Wrap -->
+      <div class="relative w-80 h-96 bg-[#c5d3c5] rounded-2xl shadow-2xl flex flex-col items-center justify-center border border-white/60 p-4 perspective-1000 overflow-hidden">
+        
+        <!-- Subtle Foil Leaves Illustration inside flap -->
+        <svg class="absolute top-2 left-2 w-16 h-16 opacity-30 text-emerald-950 pointer-events-none" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.8 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+        </svg>
+        <svg class="absolute bottom-2 right-2 w-20 h-20 opacity-25 text-emerald-950 pointer-events-none rotate-45" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M17 8C8 10 5.9 16.17 3.82 21.34L5.71 22l1-2.3A4.49 4.49 0 0 0 8 20C19 20 22 3 22 3c-1 2-8 2.25-13 3.25S2 11.5 2 13.5s1.75 3.75 1.75 3.75C7 8 17 8 17 8z"/>
+        </svg>
+
+        <!-- Inner Letter Preview Card -->
+        <div id="envelopeLetter" class="w-68 h-72 w-full bg-[#fdfbf7] rounded-xl shadow-inner border border-amber-200/50 flex flex-col items-center justify-center p-6 text-center transform transition-transform duration-700">
+          <div class="w-12 h-0.5 bg-amber-400/80 mb-3"></div>
+          <p class="font-cormorant italic text-sm text-stone-500 mb-1">Together with their loving families</p>
+          <h2 class="font-script text-3xl text-stone-800">You're Invited</h2>
+          <p class="font-montserrat text-[10px] tracking-widest uppercase text-stone-400 mt-2">Tap seal to open the letter</p>
+        </div>
+
+        <!-- Envelope Fold Shapes -->
+        <div class="absolute inset-x-0 bottom-0 h-44 bg-[#b8c9b8]/80 backdrop-blur-xs rounded-b-2xl border-t border-white/40 flex items-center justify-center pointer-events-none"></div>
+
+        <!-- Wax Seal Button -->
+        <div id="waxSealBtn" class="wax-seal absolute top-[52%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 rounded-full bg-gradient-to-tr from-[#c87a7a] via-[#e29393] to-[#f4b6b6] border-2 border-[#ffdede] flex flex-col items-center justify-center text-white shadow-xl z-20 pulse-subtle">
+          <span class="text-xs font-cormorant font-bold uppercase tracking-wider text-amber-100 drop-shadow">A &bull; S</span>
+          <i class="fa-solid fa-heart text-[10px] text-amber-200 mt-0.5"></i>
+          <span class="text-[8px] font-sans tracking-tight text-white/90 mt-1 uppercase font-semibold">Tap Open</span>
+        </div>
+      </div>
+
+      <p class="text-xs text-sage-700/80 mt-6 tracking-wide flex items-center gap-1.5 font-medium">
+        <i class="fa-regular fa-envelope-open text-xs"></i> Personalized Digital Wedding Invite
+      </p>
+    </div>
+
+    <!-- ==================== 2. MAIN WEDDING INVITATION WEBSITE CONTENT ==================== -->
+    <div id="invitationContent" class="w-full flex flex-col pb-24 opacity-0 transition-opacity duration-1000">
+
+      <!-- SECTION 1: HEADER & COUPLE BANNER -->
+      <header class="relative pt-12 pb-10 px-6 text-center bg-gradient-to-b from-[#eaf0ea] via-[#f7f5f0] to-[#faf8f5] overflow-hidden border-b border-amber-100">
+        <!-- Arabic Calligraphy Blessing -->
+        <div class="text-center mb-3">
+          <p class="text-emerald-900/80 font-cormorant text-xl tracking-widest font-semibold">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
+          <p class="text-[10px] uppercase tracking-widest text-stone-500 mt-1 font-medium">In the name of Allah, the Most Gracious, the Most Merciful</p>
+        </div>
+
+        <div class="flex items-center justify-center gap-2 my-2">
+          <div class="h-[1px] w-12 bg-gradient-to-r from-transparent to-amber-400"></div>
+          <span class="text-amber-500 text-xs">✦</span>
+          <div class="h-[1px] w-12 bg-gradient-to-l from-transparent to-amber-400"></div>
+        </div>
+
+        <p class="font-cormorant text-base text-stone-600 italic">With the blessings of Almighty & our beloved parents</p>
+
+        <!-- Main Names -->
+        <div class="my-5">
+          <h1 class="font-script text-5xl text-stone-800 leading-tight">Ahammed Yaseen</h1>
+          <span class="font-cormorant italic text-2xl text-amber-700 my-1 block">&amp;</span>
+          <h1 class="font-script text-5xl text-stone-800 leading-tight">Suhanaa</h1>
+        </div>
+
+        <!-- Couple Motif Illustration Frame -->
+        <div class="relative w-48 h-48 mx-auto my-3 p-1.5 rounded-full border-2 border-dashed border-amber-300 flex items-center justify-center bg-white shadow-md">
+          <div class="w-full h-full rounded-full overflow-hidden bg-gradient-to-tr from-emerald-50 via-rose-50 to-amber-50 flex items-center justify-center relative">
+            <!-- Royal Arch / Floral Vector SVG -->
+            <svg class="w-36 h-36 text-amber-700/80" viewBox="0 0 100 100" fill="none" stroke="currentColor">
+              <!-- Romantic Silhouette Vector Artwork -->
+              <path d="M50 15 C 30 15, 20 40, 20 75 L 80 75 C 80 40, 70 15, 50 15 Z" stroke-width="1.5" stroke="#c59d5f" fill="#fdfcf9"/>
+              <circle cx="43" cy="42" r="7" fill="#b08443"/>
+              <path d="M36 50 C 36 46, 50 46, 50 50 L 50 72 L 36 72 Z" fill="#344534"/>
+              <circle cx="57" cy="45" r="6" fill="#c87a7a"/>
+              <path d="M50 52 C 50 48, 64 48, 64 52 L 64 74 L 50 74 Z" fill="#d99b9b"/>
+              <!-- Floral Vines -->
+              <path d="M22 68 Q 30 50 35 30" stroke="#7e9c7e" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M78 68 Q 70 50 65 30" stroke="#7e9c7e" stroke-width="1.5" stroke-linecap="round"/>
+              <circle cx="35" cy="30" r="3" fill="#e29393"/>
+              <circle cx="65" cy="30" r="3" fill="#e29393"/>
+            </svg>
+            <div class="absolute bottom-3 text-center w-full">
+              <span class="text-[10px] font-cormorant font-bold tracking-widest text-amber-800 uppercase bg-amber-50/90 px-2 py-0.5 rounded-full border border-amber-200">#AhammedWedsSuhanaa</span>
+            </div>
+          </div>
+        </div>
+
+        <p class="text-xs text-stone-600 max-w-xs mx-auto leading-relaxed mt-3">
+          Cordially request the honour of your graceful presence to share in the joy of our union.
+        </p>
+      </header>
+
+
+      <!-- SECTION 2: INTERACTIVE SCRATCH TO REVEAL DATE -->
+      <section class="px-5 py-6 bg-white border-b border-amber-100 flex flex-col items-center">
+        <div class="text-center mb-3">
+          <span class="text-xs font-semibold tracking-widest uppercase text-amber-600 bg-amber-50 px-3 py-1 rounded-full border border-amber-200">Interactive</span>
+          <h2 class="font-cormorant text-2xl font-bold text-stone-800 mt-2">Save Our Date</h2>
+          <p class="text-xs text-stone-500 font-montserrat">Scratch the gold card below to reveal when we tie the knot!</p>
+        </div>
+
+        <!-- Scratch Card Box Container -->
+        <div class="relative w-full max-w-xs h-44 rounded-2xl overflow-hidden shadow-lg border border-amber-300">
+          
+          <!-- Hidden Revealed Card Content -->
+          <div id="revealedDateCard" class="w-full h-full bg-gradient-to-br from-amber-50 via-white to-rose-50 flex flex-col items-center justify-center p-4 text-center">
+            <span class="text-xs uppercase tracking-widest font-semibold text-rose-800 mb-1">We Are Getting Married</span>
+            <div class="flex items-center gap-3">
+              <span class="font-script text-4xl text-amber-800">Friday</span>
+            </div>
+            <div class="text-3xl font-playfair font-bold text-stone-900 tracking-wide my-1">
+              18 <span class="text-amber-600">&bull;</span> DEC <span class="text-amber-600">&bull;</span> 2026
+            </div>
+            <p class="text-xs text-stone-500 font-medium">Grand Pearl Convention Center &bull; Calicut</p>
+            <div class="mt-2 text-rose-600 flex items-center gap-1.5 text-xs font-semibold">
+              <i class="fa-solid fa-heart animate-bounce"></i> Can't wait to celebrate with you!
+            </div>
+          </div>
+
+          <!-- The Scratch Canvas Layer -->
+          <canvas id="scratchCanvas" width="320" height="176"></canvas>
+        </div>
+
+        <div class="flex items-center justify-between w-full max-w-xs mt-3 px-1 text-xs text-stone-500">
+          <span id="scratchStatus"><i class="fa-solid fa-hand-sparkles text-amber-500"></i> Scratch with finger or mouse</span>
+          <button id="quickRevealBtn" class="text-amber-700 underline text-xs font-medium hover:text-amber-900">Reveal all</button>
+        </div>
+      </section>
+
+
+      <!-- SECTION 3: LIVE WEDDING COUNTDOWN TIMER -->
+      <section class="py-6 px-5 bg-gradient-to-b from-[#fbf9f5] to-[#f4f7f4] text-center border-b border-amber-100">
+        <p class="font-cormorant italic text-base text-stone-600">The countdown begins to our forever</p>
+        <h3 class="font-playfair text-xl text-stone-800 font-bold mb-4">Celebration In</h3>
+
+        <!-- Countdown grid -->
+        <div class="grid grid-cols-4 gap-2.5 max-w-xs mx-auto">
+          <!-- Days -->
+          <div class="bg-white rounded-xl p-3 shadow-md border border-amber-100 flex flex-col items-center">
+            <span id="countDays" class="text-2xl font-bold font-playfair text-emerald-900">00</span>
+            <span class="text-[10px] uppercase tracking-wider font-semibold text-stone-400 mt-1">Days</span>
+          </div>
+          <!-- Hours -->
+          <div class="bg-white rounded-xl p-3 shadow-md border border-amber-100 flex flex-col items-center">
+            <span id="countHours" class="text-2xl font-bold font-playfair text-emerald-900">00</span>
+            <span class="text-[10px] uppercase tracking-wider font-semibold text-stone-400 mt-1">Hours</span>
+          </div>
+          <!-- Minutes -->
+          <div class="bg-white rounded-xl p-3 shadow-md border border-amber-100 flex flex-col items-center">
+            <span id="countMinutes" class="text-2xl font-bold font-playfair text-emerald-900">00</span>
+            <span class="text-[10px] uppercase tracking-wider font-semibold text-stone-400 mt-1">Mins</span>
+          </div>
+          <!-- Seconds -->
+          <div class="bg-white rounded-xl p-3 shadow-md border border-amber-100 flex flex-col items-center">
+            <span id="countSeconds" class="text-2xl font-bold font-playfair text-amber-700">00</span>
+            <span class="text-[10px] uppercase tracking-wider font-semibold text-stone-400 mt-1">Secs</span>
+          </div>
+        </div>
+
+        <!-- Add to Calendar Action -->
+        <button id="addToCalBtn" class="mt-5 inline-flex items-center gap-2 px-4 py-2 bg-stone-800 text-amber-100 rounded-full text-xs font-medium tracking-wide shadow-sm hover:bg-black transition-all">
+          <i class="fa-regular fa-calendar-plus"></i> Add to Calendar
+        </button>
+      </section>
+
+
+      <!-- SECTION 4: WEDDING CEREMONIES & EVENTS ITINERARY -->
+      <section class="py-8 px-5 bg-white">
+        <div class="text-center mb-6">
+          <span class="text-xs uppercase tracking-widest text-amber-600 font-semibold">Itinerary</span>
+          <h2 class="font-cormorant text-3xl font-bold text-stone-800">Wedding Events</h2>
+          <div class="w-16 h-0.5 bg-amber-400 mx-auto mt-2"></div>
+        </div>
+
+        <div class="space-y-4">
+          
+          <!-- Event 1: Haldi & Mehndi -->
+          <div class="rounded-2xl p-5 bg-gradient-to-r from-amber-50 to-orange-50/60 border border-amber-200 shadow-sm relative overflow-hidden">
+            <div class="absolute -right-4 -bottom-4 text-amber-200/40 text-7xl font-serif select-none pointer-events-none">
+              <i class="fa-solid fa-leaf"></i>
+            </div>
+            <div class="flex items-start justify-between">
+              <div>
+                <span class="text-[10px] uppercase tracking-wider font-bold bg-amber-200/60 text-amber-900 px-2.5 py-0.5 rounded-full">Day 01</span>
+                <h3 class="font-script text-3xl text-amber-900 mt-1">Haldi &amp; Mehndi Ceremony</h3>
+              </div>
+              <div class="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center text-amber-700 shadow-inner">
+                <i class="fa-solid fa-spray-can-sparkles text-sm"></i>
+              </div>
+            </div>
+            
+            <p class="text-xs text-stone-600 mt-2 italic">A lively celebration filled with marigold petals, music, and vibrant henna vibes.</p>
+            
+            <div class="mt-4 pt-3 border-t border-amber-200/60 grid grid-cols-2 gap-2 text-xs">
+              <div class="flex items-center gap-2 text-stone-700">
+                <i class="fa-regular fa-calendar text-amber-600"></i>
+                <span>Thu, Dec 17, 2026</span>
+              </div>
+              <div class="flex items-center gap-2 text-stone-700">
+                <i class="fa-regular fa-clock text-amber-600"></i>
+                <span>04:30 PM Onwards</span>
+              </div>
+              <div class="col-span-2 flex items-center gap-2 text-stone-700">
+                <i class="fa-solid fa-location-dot text-amber-600"></i>
+                <span>Rosewood Manor Gardens, Wayanad Road</span>
+              </div>
+              <div class="col-span-2 flex items-center gap-2 text-amber-900 font-medium">
+                <i class="fa-solid fa-shirt text-amber-600"></i>
+                <span>Dress Code: Shades of Yellow &amp; Pastel Florals</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Event 2: The Nikah / Wedding Ceremony -->
+          <div class="rounded-2xl p-5 bg-gradient-to-r from-emerald-50 to-teal-50/50 border border-emerald-200 shadow-sm relative overflow-hidden">
+            <div class="absolute -right-3 -bottom-3 text-emerald-200/40 text-7xl select-none pointer-events-none">
+              <i class="fa-solid fa-ring"></i>
+            </div>
+            <div class="flex items-start justify-between">
+              <div>
+                <span class="text-[10px] uppercase tracking-wider font-bold bg-emerald-200/60 text-emerald-950 px-2.5 py-0.5 rounded-full">Main Ceremony</span>
+                <h3 class="font-script text-3xl text-emerald-950 mt-1">The Auspicious Nikah</h3>
+              </div>
+              <div class="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-800 shadow-inner">
+                <i class="fa-solid fa-hands-praying text-sm"></i>
+              </div>
+            </div>
+
+            <p class="text-xs text-stone-600 mt-2 italic">The sacred vows and exchange of prayers as two souls unite under divine grace.</p>
+
+            <div class="mt-4 pt-3 border-t border-emerald-200/60 grid grid-cols-2 gap-2 text-xs">
+              <div class="flex items-center gap-2 text-stone-700">
+                <i class="fa-regular fa-calendar text-emerald-700"></i>
+                <span class="font-semibold">Fri, Dec 18, 2026</span>
+              </div>
+              <div class="flex items-center gap-2 text-stone-700">
+                <i class="fa-regular fa-clock text-emerald-700"></i>
+                <span class="font-semibold">11:00 AM Sharp</span>
+              </div>
+              <div class="col-span-2 flex items-center gap-2 text-stone-700">
+                <i class="fa-solid fa-location-dot text-emerald-700"></i>
+                <span>Grand Pearl Convention Center, Calicut</span>
+              </div>
+              <div class="col-span-2 flex items-center gap-2 text-emerald-900 font-medium">
+                <i class="fa-solid fa-shirt text-emerald-700"></i>
+                <span>Dress Code: Traditional Royal &amp; Modest Pastels</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Event 3: Walima / Grand Reception -->
+          <div class="rounded-2xl p-5 bg-gradient-to-r from-rose-50 to-pink-50/50 border border-rose-200 shadow-sm relative overflow-hidden">
+            <div class="absolute -right-3 -bottom-3 text-rose-200/40 text-7xl select-none pointer-events-none">
+              <i class="fa-solid fa-champagne-glasses"></i>
+            </div>
+            <div class="flex items-start justify-between">
+              <div>
+                <span class="text-[10px] uppercase tracking-wider font-bold bg-rose-200/60 text-rose-950 px-2.5 py-0.5 rounded-full">Grand Celebration</span>
+                <h3 class="font-script text-3xl text-rose-950 mt-1">Walima Reception</h3>
+              </div>
+              <div class="w-10 h-10 rounded-full bg-rose-100 flex items-center justify-center text-rose-700 shadow-inner">
+                <i class="fa-solid fa-utensils text-sm"></i>
+              </div>
+            </div>
+
+            <p class="text-xs text-stone-600 mt-2 italic">An evening of exquisite feasts, family fellowship, and sweet memories.</p>
+
+            <div class="mt-4 pt-3 border-t border-rose-200/60 grid grid-cols-2 gap-2 text-xs">
+              <div class="flex items-center gap-2 text-stone-700">
+                <i class="fa-regular fa-calendar text-rose-700"></i>
+                <span>Sat, Dec 19, 2026</span>
+              </div>
+              <div class="flex items-center gap-2 text-stone-700">
+                <i class="fa-regular fa-clock text-rose-700"></i>
+                <span>07:00 PM Onwards</span>
+              </div>
+              <div class="col-span-2 flex items-center gap-2 text-stone-700">
+                <i class="fa-solid fa-location-dot text-rose-700"></i>
+                <span>The Waterfront Royale Ballroom</span>
+              </div>
+              <div class="col-span-2 flex items-center gap-2 text-rose-900 font-medium">
+                <i class="fa-solid fa-shirt text-rose-700"></i>
+                <span>Dress Code: Elegant Evening Formal / Black Tie Optional</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+
+      <!-- SECTION 5: THE FAMILIES SECTION -->
+      <section class="py-8 px-5 bg-gradient-to-b from-stone-50 to-[#fdfbf7] border-y border-amber-100">
+        <div class="text-center mb-6">
+          <span class="text-xs uppercase tracking-widest text-stone-500 font-semibold">With Love &amp; Respect</span>
+          <h2 class="font-cormorant text-3xl font-bold text-stone-800">The Families</h2>
+          <p class="text-xs text-stone-500 italic mt-1">Awaiting your presence and blessings</p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 text-center">
+          
+          <!-- Groom's Family -->
+          <div class="bg-white rounded-2xl p-4 shadow-sm border border-stone-200/80 flex flex-col justify-between">
+            <div>
+              <div class="w-10 h-10 rounded-full bg-emerald-50 text-emerald-800 mx-auto flex items-center justify-center mb-2">
+                <i class="fa-solid fa-user-tie text-sm"></i>
+              </div>
+              <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-800">Groom's Family</span>
+              <h4 class="font-cormorant text-base font-bold text-stone-800 mt-2">Mr. &amp; Mrs. Yaseen</h4>
+              <p class="text-[11px] text-stone-500 leading-snug mt-1">P. Ahammed Kutty Haji <br>&amp; Suhra Yaseen</p>
+            </div>
+            <p class="text-[9px] uppercase tracking-widest text-amber-700 font-medium mt-3 pt-2 border-t border-stone-100">Kozhikode, Kerala</p>
+          </div>
+
+          <!-- Bride's Family -->
+          <div class="bg-white rounded-2xl p-4 shadow-sm border border-stone-200/80 flex flex-col justify-between">
+            <div>
+              <div class="w-10 h-10 rounded-full bg-rose-50 text-rose-800 mx-auto flex items-center justify-center mb-2">
+                <i class="fa-solid fa-heart text-sm"></i>
+              </div>
+              <span class="text-[10px] font-bold uppercase tracking-wider text-rose-800">Bride's Family</span>
+              <h4 class="font-cormorant text-base font-bold text-stone-800 mt-2">Mr. &amp; Mrs. Rahman</h4>
+              <p class="text-[11px] text-stone-500 leading-snug mt-1">Abdul Rahman K. <br>&amp; Fathima Suhana</p>
+            </div>
+            <p class="text-[9px] uppercase tracking-widest text-amber-700 font-medium mt-3 pt-2 border-t border-stone-100">Malappuram, Kerala</p>
+          </div>
+
+        </div>
+      </section>
+
+
+      <!-- SECTION 6: "WHERE WE CELEBRATE" & MAP -->
+      <section class="py-8 px-5 bg-white border-b border-amber-100">
+        <div class="text-center mb-5">
+          <div class="w-8 h-8 rounded-full bg-amber-50 text-amber-700 flex items-center justify-center mx-auto mb-2 border border-amber-200">
+            <i class="fa-solid fa-location-dot"></i>
+          </div>
+          <span class="text-xs uppercase tracking-widest text-amber-700 font-semibold">Location</span>
+          <h2 class="font-cormorant text-3xl font-bold text-stone-800">Where We Celebrate</h2>
+          <p class="text-xs text-stone-500 mt-1">Grand Pearl Convention Center &bull; Calicut</p>
+        </div>
+
+        <!-- Venue Card with Interactive Map Simulation -->
+        <div class="bg-stone-50 rounded-2xl overflow-hidden border border-stone-200 shadow-md">
+          <!-- Stylized Map Preview Graphic -->
+          <div class="relative w-full h-44 bg-slate-200 overflow-hidden">
+            <!-- Simulated Vector Road Map -->
+            <svg class="w-full h-full object-cover" viewBox="0 0 400 200" preserveAspectRatio="none">
+              <!-- Background terrain -->
+              <rect width="400" height="200" fill="#f0ebe1"/>
+              <!-- Water body -->
+              <path d="M 330 0 Q 360 80 400 120 L 400 0 Z" fill="#d4e4ea"/>
+              <!-- Parks/Greenery -->
+              <rect x="20" y="20" width="70" height="60" rx="10" fill="#dde7d7"/>
+              <rect x="260" y="110" width="100" height="70" rx="10" fill="#dde7d7"/>
+              <!-- Roads -->
+              <path d="M 0 100 L 400 100" stroke="#ffffff" stroke-width="12"/>
+              <path d="M 0 100 L 400 100" stroke="#fcd34d" stroke-width="4"/>
+              <path d="M 180 0 L 180 200" stroke="#ffffff" stroke-width="10"/>
+              <path d="M 80 0 Q 120 100 120 200" stroke="#ffffff" stroke-width="8"/>
+              <path d="M 180 100 Q 240 60 400 60" stroke="#ffffff" stroke-width="8"/>
+            </svg>
+
+            <!-- Destination Pin -->
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-full flex flex-col items-center">
+              <div class="px-2 py-0.5 bg-stone-900 text-white rounded text-[10px] font-medium shadow mb-1 whitespace-nowrap">
+                Grand Pearl Convention Center
+              </div>
+              <div class="text-rose-600 text-3xl drop-shadow animate-bounce">
+                <i class="fa-solid fa-location-dot"></i>
+              </div>
+            </div>
+
+            <!-- Soft Map controls overlay -->
+            <div class="absolute bottom-2 left-2 bg-white/90 backdrop-blur-xs px-2 py-1 rounded text-[10px] text-stone-600 shadow">
+              <i class="fa-solid fa-car text-amber-600 mr-1"></i> NH 66 Bypass, Calicut
+            </div>
+          </div>
+
+          <div class="p-4 bg-white flex flex-col gap-3">
+            <div>
+              <h4 class="font-playfair font-bold text-stone-800 text-base">Grand Pearl Convention Center</h4>
+              <p class="text-xs text-stone-500 mt-0.5">NH 66 Bypass Road, Near HiLITE Mall, Kozhikode, Kerala 673014</p>
+            </div>
+
+            <a href="https://maps.google.com/?q=Calicut+Convention+Center" target="_blank" rel="noopener noreferrer" class="w-full py-2.5 px-4 bg-amber-600 text-white hover:bg-amber-700 active:scale-98 rounded-xl font-medium text-xs flex items-center justify-center gap-2 shadow-sm transition-all text-center">
+              <i class="fa-solid fa-diamond-turn-right text-sm"></i>
+              <span>Get Directions on Google Maps</span>
+            </a>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- SECTION 7: RSVP & WISHES -->
+      <section class="py-8 px-5 bg-gradient-to-b from-[#f9f7f4] to-white">
+        <div class="text-center mb-6">
+          <span class="text-xs uppercase tracking-widest text-emerald-800 font-semibold">Join Our Celebration</span>
+          <h2 class="font-cormorant text-3xl font-bold text-stone-800">Kindly RSVP</h2>
+          <p class="text-xs text-stone-500 mt-1">Please let us know if you will be celebrating with us!</p>
+        </div>
+
+        <!-- WhatsApp Quick RSVP Button -->
+        <a id="whatsappRsvpBtn" href="https://wa.me/?text=Dear%20Ahammed%20Yaseen%20%26%20Suhanaa%2C%20Heartiest%20congratulations!%20I%20would%20be%20delighted%20to%20attend%20your%20wedding%20celebration.%20May%20Allah%20bless%20your%20union!" target="_blank" class="w-full py-3.5 px-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl flex items-center justify-center gap-3 font-medium text-sm shadow-md transition-all active:scale-98 mb-6">
+          <i class="fa-brands fa-whatsapp text-xl"></i>
+          <span>RSVP via WhatsApp</span>
+        </a>
+
+        <!-- Guest Blessing Board Form -->
+        <div class="bg-white rounded-2xl p-5 border border-amber-200/80 shadow-sm">
+          <h4 class="font-cormorant text-xl font-bold text-stone-800 mb-1 flex items-center gap-2">
+            <i class="fa-solid fa-pen-fancy text-amber-600 text-sm"></i> Leave Your Warm Blessing
+          </h4>
+          <p class="text-xs text-stone-500 mb-4">Send a heartfelt message or prayer to Ahammed &amp; Suhanaa</p>
+
+          <form id="wishesForm" class="space-y-3">
+            <div>
+              <label class="block text-[11px] font-semibold text-stone-600 mb-1">Your Name</label>
+              <input type="text" id="guestNameInput" required placeholder="e.g. Dr. Salman & Family" class="w-full px-3 py-2 text-xs rounded-xl border border-stone-200 focus:outline-none focus:border-amber-500 bg-stone-50/50">
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-semibold text-stone-600 mb-1">Your Blessing / Message</label>
+              <textarea id="guestMessageInput" required rows="3" placeholder="Barakallahu lakuma wa baraka alaikuma... Wishing you lifelong love and happiness!" class="w-full px-3 py-2 text-xs rounded-xl border border-stone-200 focus:outline-none focus:border-amber-500 bg-stone-50/50"></textarea>
+            </div>
+
+            <button type="submit" class="w-full py-2.5 bg-stone-900 text-amber-100 rounded-xl text-xs font-semibold hover:bg-black transition-all flex items-center justify-center gap-2">
+              <i class="fa-solid fa-paper-plane text-xs"></i> Post Blessing
+            </button>
+          </form>
+
+          <!-- Live Feed of Guest Wishes -->
+          <div class="mt-6 pt-4 border-t border-stone-100">
+            <span class="text-[11px] font-bold uppercase tracking-wider text-stone-400 block mb-3">Recent Blessings</span>
+            <div id="wishesContainer" class="space-y-2.5 max-h-56 overflow-y-auto pr-1">
+              <!-- Initial dummy wishes for lively feel -->
+              <div class="p-3 bg-amber-50/60 rounded-xl border border-amber-100 text-xs">
+                <div class="flex items-center justify-between font-semibold text-stone-800 text-[11px]">
+                  <span>Faisal &amp; Hiba</span>
+                  <span class="text-[9px] text-stone-400 font-normal">Just now</span>
+                </div>
+                <p class="text-stone-600 mt-1 text-[11px]">Barakallahu feekum! So thrilled for both of you Ahammed &amp; Suhanaa. Looking forward to the big day! 🎉</p>
+              </div>
+
+              <div class="p-3 bg-stone-50 rounded-xl border border-stone-100 text-xs">
+                <div class="flex items-center justify-between font-semibold text-stone-800 text-[11px]">
+                  <span>Uncle Rashid &amp; Family</span>
+                  <span class="text-[9px] text-stone-400 font-normal">1 hour ago</span>
+                </div>
+                <p class="text-stone-600 mt-1 text-[11px]">Heartiest congratulations! May the Almighty bestow immense barakah upon this beautiful union.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- SECTION 8: FOOTER -->
+      <footer class="pt-8 pb-12 px-6 text-center bg-stone-900 text-amber-100 relative">
+        <div class="w-10 h-0.5 bg-amber-400/50 mx-auto mb-4"></div>
+        <h3 class="font-script text-4xl text-amber-200">Ahammed &amp; Suhanaa</h3>
+        <p class="text-[11px] tracking-widest uppercase text-stone-400 mt-2 font-medium">December 18, 2026 &bull; #AhammedWedsSuhanaa</p>
+        
+        <p class="text-xs text-stone-400 italic max-w-xs mx-auto mt-4">
+          "And among His signs is that He created for you mates from among yourselves, that you may find tranquility in them; and He placed between you love and mercy."
+          <br><span class="text-[10px] text-amber-400/80 not-italic">(Surah Ar-Rum 30:21)</span>
+        </p>
+
+        <div class="mt-8 text-[10px] text-stone-500">
+          Handcrafted with joy &bull; Touch &amp; Share with Loved Ones
+        </div>
+      </footer>
+
+    </div>
+
+  </main>
+
+  <!-- ==================== JAVASCRIPT LOGIC ==================== -->
+  <script>
+    // --- 1. Audio Synthesizer (Shehnai / Soft Ambient Melody via Web Audio API) ---
+    // Avoids external audio file 404s and works seamlessly across devices
+    let audioCtx = null;
+    let isPlayingMusic = false;
+    let musicInterval = null;
+
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    // Melodic notes inspired by celebratory ambient ragas (Shehnai/Flute scale)
+    const melodyNotes = [
+      261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88, 523.25, 587.33, 659.25
+    ];
+    let noteStep = 0;
+
+    function playSoftTone(freq, duration = 0.8) {
+      if (!audioCtx || !isPlayingMusic) return;
+      try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+
+        // Warm harmonic tone (Shehnai / Santoor style envelope)
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+
+        gain.gain.setValueAtTime(0.001, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.08, audioCtx.currentTime + 0.1);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    function startBackgroundMusic() {
+      initAudio();
+      isPlayingMusic = true;
+      document.getElementById('musicText').textContent = "Music On";
+      document.getElementById('musicIcon').classList.add('animate-spin');
+
+      if (musicInterval) clearInterval(musicInterval);
+      
+      const weddingPattern = [0, 2, 4, 7, 5, 4, 2, 4, 7, 9, 7, 4];
+      musicInterval = setInterval(() => {
+        if (!isPlayingMusic) return;
+        const noteIndex = weddingPattern[noteStep % weddingPattern.length];
+        playSoftTone(melodyNotes[noteIndex], 1.2);
+        // Soft drone note on root
+        if (noteStep % 4 === 0) {
+          playSoftTone(130.81, 1.8);
+        }
+        noteStep++;
+      }, 500);
+    }
+
+    function toggleBackgroundMusic() {
+      if (isPlayingMusic) {
+        isPlayingMusic = false;
+        if (musicInterval) clearInterval(musicInterval);
+        document.getElementById('musicText').textContent = "Music Off";
+        document.getElementById('musicIcon').classList.remove('animate-spin');
+      } else {
+        startBackgroundMusic();
+      }
+    }
+
+    document.getElementById('musicToggleBtn').addEventListener('click', toggleBackgroundMusic);
+
+    // --- 2. Floating Rose Petals Generator ---
+    function spawnPetals() {
+      const container = document.getElementById('petals-container');
+      const colors = ['#fbcfe8', '#fecdd3', '#fed7aa', '#fef08a'];
+      for (let i = 0; i < 16; i++) {
+        const petal = document.createElement('div');
+        petal.className = 'petal rounded-full shadow-sm';
+        petal.style.left = Math.random() * 100 + 'vw';
+        petal.style.width = (Math.random() * 10 + 8) + 'px';
+        petal.style.height = (Math.random() * 14 + 10) + 'px';
+        petal.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        petal.style.animationDuration = (Math.random() * 5 + 6) + 's';
+        petal.style.animationDelay = (Math.random() * 5) + 's';
+        petal.style.borderRadius = '50% 0 50% 50%';
+        container.appendChild(petal);
+      }
+    }
+    spawnPetals();
+
+    // --- 3. Digital Envelope Unsealing Logic ---
+    const envelopeScreen = document.getElementById('envelopeScreen');
+    const waxSealBtn = document.getElementById('waxSealBtn');
+    const envelopeLetter = document.getElementById('envelopeLetter');
+    const invitationContent = document.getElementById('invitationContent');
+
+    waxSealBtn.addEventListener('click', () => {
+      // Start background melody on user gesture
+      startBackgroundMusic();
+
+      // Seal breaks with sound/scale
+      waxSealBtn.style.transform = 'translate(-50%, -50%) scale(1.3)';
+      waxSealBtn.style.opacity = '0';
+
+      // Slide letter up out of envelope
+      setTimeout(() => {
+        envelopeLetter.style.transform = 'translateY(-120px) scale(1.05)';
+      }, 300);
+
+      // Fade out envelope screen and show main website
+      setTimeout(() => {
+        envelopeScreen.style.opacity = '0';
+        envelopeScreen.style.pointerEvents = 'none';
+        invitationContent.classList.remove('opacity-0');
+        invitationContent.classList.add('opacity-100');
+        initScratchCard();
+      }, 1000);
+    });
+
+    // --- 4. Interactive Scratch Card Canvas ---
+    let isScratching = false;
+    let scratchedPixels = 0;
+    let totalPixels = 0;
+    let scratchCardCanvas = document.getElementById('scratchCanvas');
+    let ctx = null;
+
+    function initScratchCard() {
+      if (!scratchCardCanvas) return;
+      ctx = scratchCardCanvas.getContext('2d', { willReadFrequently: true });
+      const width = scratchCardCanvas.width;
+      const height = scratchCardCanvas.height;
+      totalPixels = width * height;
+
+      // Render luxurious gold foil gradient with sparkle dots
+      const grad = ctx.createLinearGradient(0, 0, width, height);
+      grad.addColorStop(0, '#d4af37');
+      grad.addColorStop(0.3, '#f9e076');
+      grad.addColorStop(0.7, '#d4af37');
+      grad.addColorStop(1, '#aa7c11');
+
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, width, height);
+
+      // Add elegant calligraphy stamp on top of the scratch coat
+      ctx.fillStyle = 'rgba(92, 60, 8, 0.85)';
+      ctx.font = 'bold 15px Montserrat, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('✨ SCRATCH TO REVEAL DATE ✨', width / 2, height / 2 - 8);
+
+      ctx.font = 'italic 12px Cormorant Garamond, serif';
+      ctx.fillStyle = 'rgba(70, 40, 5, 0.9)';
+      ctx.fillText('Swipe gently with finger or mouse', width / 2, height / 2 + 16);
+
+      // Border outline
+      ctx.strokeStyle = '#fff1b0';
+      ctx.lineWidth = 4;
+      ctx.strokeRect(8, 8, width - 16, height - 16);
+
+      // Touch & Mouse Events
+      function getPos(e) {
+        const rect = scratchCardCanvas.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        const scaleX = scratchCardCanvas.width / rect.width;
+        const scaleY = scratchCardCanvas.height / rect.height;
+        return {
+          x: (clientX - rect.left) * scaleX,
+          y: (clientY - rect.top) * scaleY
+        };
+      }
+
+      function scratch(e) {
+        if (!isScratching) return;
+        const pos = getPos(e);
+        ctx.globalCompositeOperation = 'destination-out';
+        ctx.beginPath();
+        ctx.arc(pos.x, pos.y, 22, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Check progress every few moves
+        checkScratchPercentage();
+      }
+
+      scratchCardCanvas.addEventListener('mousedown', (e) => { isScratching = true; scratch(e); });
+      window.addEventListener('mouseup', () => { isScratching = false; });
+      scratchCardCanvas.addEventListener('mousemove', scratch);
+
+      scratchCardCanvas.addEventListener('touchstart', (e) => { isScratching = true; scratch(e); }, { passive: true });
+      window.addEventListener('touchend', () => { isScratching = false; });
+      scratchCardCanvas.addEventListener('touchmove', scratch, { passive: true });
+    }
+
+    function checkScratchPercentage() {
+      if (!ctx) return;
+      try {
+        const imgData = ctx.getImageData(0, 0, scratchCardCanvas.width, scratchCardCanvas.height);
+        let clearCount = 0;
+        // Sample every 16th pixel to maintain performance
+        for (let i = 3; i < imgData.data.length; i += 16) {
+          if (imgData.data[i] === 0) {
+            clearCount++;
+          }
+        }
+        const pct = clearCount / (imgData.data.length / 16);
+        if (pct > 0.45) {
+          // Reveal completely once near 50%
+          fullyRevealDate();
+        }
+      } catch (err) {
+        console.warn(err);
+      }
+    }
+
+    function fullyRevealDate() {
+      if (!scratchCardCanvas) return;
+      scratchCardCanvas.style.transition = 'opacity 0.6s ease';
+      scratchCardCanvas.style.opacity = '0';
+      setTimeout(() => {
+        scratchCardCanvas.style.display = 'none';
+      }, 600);
+      document.getElementById('scratchStatus').innerHTML = '❤️ <span class="text-rose-700 font-semibold">Date Revealed! See you there!</span>';
+    }
+
+    document.getElementById('quickRevealBtn').addEventListener('click', fullyRevealDate);
+
+    // --- 5. Real-Time Wedding Countdown Timer ---
+    const targetWeddingDate = new Date('December 18, 2026 11:00:00').getTime();
+
+    function updateCountdown() {
+      const now = new Date().getTime();
+      const difference = targetWeddingDate - now;
+
+      if (difference > 0) {
+        const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+        document.getElementById('countDays').textContent = String(days).padStart(2, '0');
+        document.getElementById('countHours').textContent = String(hours).padStart(2, '0');
+        document.getElementById('countMinutes').textContent = String(minutes).padStart(2, '0');
+        document.getElementById('countSeconds').textContent = String(seconds).padStart(2, '0');
+      } else {
+        document.getElementById('countDays').textContent = '00';
+        document.getElementById('countHours').textContent = '00';
+        document.getElementById('countMinutes').textContent = '00';
+        document.getElementById('countSeconds').textContent = '00';
+      }
+    }
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+
+    // Add to Calendar iCal generation
+    document.getElementById('addToCalBtn').addEventListener('click', () => {
+      const title = encodeURIComponent("Wedding Ceremony: Ahammed Yaseen & Suhanaa");
+      const details = encodeURIComponent("Grand Nikah & Wedding celebration of Ahammed Yaseen & Suhanaa (#AhammedWedsSuhanaa).");
+      const location = encodeURIComponent("Grand Pearl Convention Center, Calicut, Kerala");
+      const dates = "20261218T053000Z/20261218T093000Z";
+      const googleCalUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&details=${details}&location=${location}&dates=${dates}`;
+      window.open(googleCalUrl, '_blank');
+    });
+
+    // --- 6. Wishes & Blessings Board Form Handler ---
+    const wishesForm = document.getElementById('wishesForm');
+    const wishesContainer = document.getElementById('wishesContainer');
+
+    wishesForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const nameInput = document.getElementById('guestNameInput');
+      const messageInput = document.getElementById('guestMessageInput');
+
+      const name = nameInput.value.trim();
+      const message = messageInput.value.trim();
+
+      if (!name || !message) return;
+
+      const newWish = document.createElement('div');
+      newWish.className = 'p-3 bg-amber-50/90 rounded-xl border border-amber-200 text-xs transform transition-all duration-300 animate-fadeIn';
+      newWish.innerHTML = `
+        <div class="flex items-center justify-between font-semibold text-stone-800 text-[11px]">
+          <span>${escapeHTML(name)}</span>
+          <span class="text-[9px] text-emerald-700 font-semibold bg-emerald-100/70 px-2 py-0.5 rounded-full">Just now</span>
+        </div>
+        <p class="text-stone-700 mt-1 text-[11px] leading-relaxed">${escapeHTML(message)}</p>
+      `;
+
+      wishesContainer.prepend(newWish);
+      wishesForm.reset();
+
+      // Show brief visual feedback on button
+      const submitBtn = wishesForm.querySelector('button');
+      const originalText = submitBtn.innerHTML;
+      submitBtn.innerHTML = '<i class="fa-solid fa-check text-xs"></i> Blessing Sent!';
+      submitBtn.classList.replace('bg-stone-900', 'bg-emerald-700');
+      setTimeout(() => {
+        submitBtn.innerHTML = originalText;
+        submitBtn.classList.replace('bg-emerald-700', 'bg-stone-900');
+      }, 2500);
+    });
+
+    function escapeHTML(str) {
+      return str.replace(/[&<>'"]/g, 
+        tag => ({
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          "'": '&#39;',
+          '"': '&quot;'
+        }[tag] || tag)
+      );
+    }
+  </script>
+</body>
+</html>
